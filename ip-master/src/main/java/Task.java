@@ -3,7 +3,7 @@ public class Task {
     String description;
 
     public Task(String description) {
-        description = this.description;
+        this.description = description;
     }
 
     public void mark() {
@@ -12,5 +12,10 @@ public class Task {
 
     public void unmark(){
         completed = false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] %s", completed ? "X" : " ", description );
     }
 }
