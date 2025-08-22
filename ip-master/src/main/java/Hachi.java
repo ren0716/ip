@@ -1,5 +1,6 @@
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Hachi {
     public static void main(String[] args) {
@@ -46,12 +47,21 @@ public class Hachi {
 
         String command = "";
         Scanner scanner = new Scanner(System.in);
+        ArrayList<String> tasks = new ArrayList<>();
 
         System.out.println("Woof! Nice to meet you" + logo + "\n" + separation);
 
         while (!Objects.equals(command, "bye")) {
             command = scanner.nextLine();
-            System.out.println(command + "\n" + separation);
+            if (Objects.equals(command, "list")) {
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println(i + 1 + ". " + tasks.get(i));
+                }
+                continue;
+            }
+            if (Objects.equals(command, "bye")) break;
+            tasks.add(command);
+            System.out.println("added: " + command + "\n" + separation);
         }
 
 
