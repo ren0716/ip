@@ -93,6 +93,8 @@ public class Hachi {
                             System.out.println("🐶 Hachi sniffed everywhere, but no task found with that number.");
                             System.out.println("Maybe fetch another number?\n" + separation);
                         }
+                    } else {
+                        System.out.println("🐶 Hachi is confused: 'which task should i unmark?'" + "\n" + separation);
                     }
                     break;
                 }
@@ -108,6 +110,8 @@ public class Hachi {
                             System.out.println("🐶 Hachi sniffed everywhere, but no task found with that number.");
                             System.out.println("Maybe fetch another number?\n" + separation);
                         }
+                    } else {
+                        System.out.println("🐶 Hachi is confused: 'which task should i mark?'" + "\n" + separation);
                     }
                     break;
                 }
@@ -118,7 +122,9 @@ public class Hachi {
                         tasks.add(new ToDo(parts[1]));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
                         System.out.println(tasks.get(tasks.size() - 1).toString());
-                        System.out.println(String.format("You now have (%d) task", tasks.size()));
+                        System.out.println(String.format("You now have (%d) task", tasks.size()) + "\n" + separation);
+                    } else {
+                        System.out.println("Woof! You can't just do nothing!" + "\n" + separation);
                     }
                     break;
                 }
@@ -130,7 +136,12 @@ public class Hachi {
                         tasks.add(new Deadline(subparts[0], subparts[1].substring(3)));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
                         System.out.println(tasks.get(tasks.size() - 1).toString());
-                        System.out.println(String.format("You now have (%d) task", tasks.size()));
+                        System.out.println(String.format("You now have (%d) task", tasks.size()) + "\n" + separation);
+                    } else {
+                        System.out.println
+                                ("🐶 Hachi paws at you:" +
+                                        " 'I need both a task and a deadline! Use it like: deadline <task> /by <time>'"
+                                        + "\n" + separation);
                     }
                     break;
                 }
@@ -144,7 +155,12 @@ public class Hachi {
                                 subparts[2].substring(3)));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
                         System.out.println(tasks.get(tasks.size() - 1).toString());
-                        System.out.println(String.format("You now have (%d) task", tasks.size()));
+                        System.out.println(String.format("You now have (%d) task", tasks.size())
+                                + "\n" + separation);
+                    } else {
+                        System.out.println("\uD83D\uDC3E Hachi sniffs around:" +
+                                " 'What's the event about? Try: event walk /from Monday /to Tuesday'"
+                                + "\n" + separation);
                     }
                     break;
                 }
