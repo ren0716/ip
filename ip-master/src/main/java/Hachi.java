@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 enum Command {
-    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN;
+    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE;
 
     static Command from(String input) {
         if (input == null || input.isBlank()) return UNKNOWN;
@@ -161,6 +161,23 @@ public class Hachi {
                         System.out.println("\uD83D\uDC3E Hachi sniffs around:" +
                                 " 'What's the event about? Try: event walk /from Monday /to Tuesday'"
                                 + "\n" + separation);
+                    }
+                    break;
+                }
+
+                case DELETE: {
+                    String[] parts = cmd.split(" ");
+                    if (parts.length > 1) {
+                        int taskNumber = Integer.parseInt(parts[1]);
+                        if (taskNumber >= 1 && taskNumber <= tasks.size()) {
+                            tasks.remove(taskNumber - 1);
+                            System.out.println("\uD83D\uDC36 \"Hachi dug a hole and buried that task. It’s gone!\"\n" + separation);
+                        } else {
+                            System.out.println("🐶 Hachi sniffed everywhere, but no task found with that number.");
+                            System.out.println("Maybe fetch another number?\n" + separation);
+                        }
+                    } else {
+                        System.out.println("🐶 Hachi is confused: 'which task should i remove?'" + "\n" + separation);
                     }
                     break;
                 }
