@@ -6,6 +6,11 @@ public class Task {
         this.description = description;
     }
 
+    public Task(String description, Boolean completed) {
+        this.description = description;
+        this.completed = completed;
+    }
+
     public void mark() {
         completed = true;
     }
