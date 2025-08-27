@@ -1,7 +1,9 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.ArrayList;
-
+import java.util.Scanner;
 enum Command {
     LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE;
 
@@ -62,7 +64,15 @@ public class Hachi {
 
         String cmd = "";
         Scanner scanner = new Scanner(System.in);
+        File f = new File("ip-master/output/output.txt");
+        StateReader saved = new StateReader(f);
         ArrayList<Task> tasks = new ArrayList<>();
+        try {
+            tasks = saved.unpack();
+
+        } catch (IOException e) {
+            System.out.println("Hachi has no prior memories");
+        }
 
         System.out.println("Woof! Nice to meet you" + logo + "\n" + separation);
 
@@ -79,6 +89,12 @@ public class Hachi {
                     break;
 
                 case BYE:
+                    StateSaver save = new StateSaver(tasks);
+                    try {
+                        save.write();
+                    } catch (IOException e) {
+                        System.out.println("file not saved");
+                    }
                     System.out.println("Come play again!" + exit + "\n" + separation);
                     return;
 
@@ -131,9 +147,9 @@ public class Hachi {
 
                 case DEADLINE: {
                     String[] parts = cmd.split(" ", 2);
-                    if (parts.length > 1) {
-                        String[] subparts = parts[1].split("/", 2);
-                        tasks.add(new Deadline(subparts[0], subparts[1].substring(3)));
+                    String[] subparts = parts[1].split("/", 2);
+                    if (!subparts[0].isEmpty() && subparts.length == 2) {
+                        tasks.add(new Deadline(subparts[0], subparts[1].substring(3).trim()));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
                         System.out.println(tasks.get(tasks.size() - 1).toString());
                         System.out.println(String.format("You now have (%d) task", tasks.size()) + "\n" + separation);
@@ -148,11 +164,11 @@ public class Hachi {
 
                 case EVENT: {
                     String[] parts = cmd.split(" ", 2);
-                    if (parts.length > 1) {
-                        String[] subparts = parts[1].split("/", 3);
+                    String[] subparts = parts[1].split("/", 3);
+                    if (!subparts[0].isEmpty() && subparts.length == 3) {
                         tasks.add(new Event(subparts[0],
-                                subparts[1].substring(5),
-                                subparts[2].substring(3)));
+                                subparts[1].substring(5).trim(),
+                                subparts[2].substring(3).trim()));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
                         System.out.println(tasks.get(tasks.size() - 1).toString());
                         System.out.println(String.format("You now have (%d) task", tasks.size())
