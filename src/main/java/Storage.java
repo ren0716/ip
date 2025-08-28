@@ -1,15 +1,16 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class StateReader {
+public class Storage {
     File state;
 
 
-    public StateReader(File state) {
+    public Storage(File state) {
         this.state = state;
     }
 
@@ -23,9 +24,6 @@ public class StateReader {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
             String taskCode  = parts[0];
-            System.out.println(parts[0]);
-            System.out.println(parts[1]);
-            System.out.println(parts[2]);
         switch (taskCode) {
             case "T": {
                 String desc = parts[1];
@@ -54,5 +52,31 @@ public class StateReader {
         }
         }
         return tasks;
+    }
+    public void write(ArrayList<Task> data) throws IOException{
+        FileWriter fw = new FileWriter("output/output.txt");
+        int size = data.size();
+        for (int i = 0; i < size; i++) {
+            Task current = data.get(i);
+            if (current instanceof ToDo) {
+                String description = current.description;
+                boolean status = current.completed;
+                fw.write("T|" + description + "|" + status + "\n");
+            }
+            if (current instanceof Deadline) {
+                String description = current.description.trim();
+                boolean status = current.completed;
+                String deadline = ((Deadline) current).by.toString();
+                fw.write("D|" + description + "|" + status + "|" + deadline + "\n");
+            }
+            if (current instanceof Event) {
+                String description = current.description.trim();
+                boolean status = current.completed;
+                String from = ((Event) current).from.toString();
+                String to = ((Event) current).to.toString();
+                fw.write("E|" + description + "|" + status + "|" + from + "|" + to + "\n");
+            }
+        }
+        fw.close();
     }
 }

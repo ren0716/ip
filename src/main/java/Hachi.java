@@ -67,10 +67,10 @@ public class Hachi {
         Scanner scanner = new Scanner(System.in);
         File f = new File("output/output.txt");
         ArrayList<Task> tasks = new ArrayList<>();
-        StateReader saved = new StateReader(f);
+        Storage storage = new Storage(f);
 
         try {
-            tasks = saved.unpack();
+            tasks = storage.unpack();
             System.out.println(tasks);
 
         } catch (IOException e) {
@@ -92,11 +92,10 @@ public class Hachi {
                     break;
 
                 case BYE:
-                    StateSaver save = new StateSaver(tasks);
                     try {
-                        save.write();
+                        storage.write(tasks);
                     } catch (IOException e) {
-                        System.out.println("file not saved");
+                        System.out.println("file not storage");
                     }
                     System.out.println("Come play again!" + exit + "\n" + separation);
                     return;
@@ -161,6 +160,7 @@ public class Hachi {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
                         LocalDateTime dateTime = LocalDateTime.parse(matcher.group(2), formatter);
                         tasks.add(new Deadline(task, dateTime));
+                        System.out.println("🐕 Paw-some! I’ve added this task to the list:");
 
                     } else {
                         System.out.println
