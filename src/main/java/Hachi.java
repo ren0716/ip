@@ -1,9 +1,10 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.util.regex.*;
 enum Command {
     LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE;
 
@@ -148,40 +149,59 @@ public class Hachi {
                 }
 
                 case DEADLINE: {
-                    String[] parts = cmd.split(" ", 2);
-                    String[] subparts = parts[1].split("/", 2);
-                    if (!subparts[0].isEmpty() && subparts.length == 2) {
-                        tasks.add(new Deadline(subparts[0], subparts[1].substring(3).trim()));
-                        System.out.println("🐕 Paw-some! I’ve added this task to the list:");
-                        System.out.println(tasks.get(tasks.size() - 1).toString());
-                        System.out.println(String.format("You now have (%d) task", tasks.size()) + "\n" + separation);
+                    Pattern pattern = Pattern.compile(
+                            "^deadline\\s+(.*?)\\s+/by\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
+                            Pattern.CASE_INSENSITIVE
+                    );
+                    Matcher matcher = pattern.matcher(cmd);
+
+                    if (matcher.matches()) {
+                        String task = matcher.group(1);
+                        String by = matcher.group(2);
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+                        LocalDateTime dateTime = LocalDateTime.parse(matcher.group(2), formatter);
+                        tasks.add(new Deadline(task, dateTime));
+
                     } else {
                         System.out.println
                                 ("🐶 Hachi paws at you:" +
-                                        " 'I need both a task and a deadline! Use it like: deadline <task> /by <time>'"
-                                        + "\n" + separation);
+                                        " 'I need both a task and a deadline! Use it like: deadline <task> /by <time>'");
+                        System.out.println("Note: Input your time as d/M/yyyy HHmm so Hachi can understand" + "\n" + separation);
                     }
                     break;
                 }
 
+
                 case EVENT: {
-                    String[] parts = cmd.split(" ", 2);
-                    String[] subparts = parts[1].split("/", 3);
-                    if (!subparts[0].isEmpty() && subparts.length == 3) {
-                        tasks.add(new Event(subparts[0],
-                                subparts[1].substring(5).trim(),
-                                subparts[2].substring(3).trim()));
+                    Pattern pattern = Pattern.compile(
+                            "^event\\s+(.*?)\\s+/from\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})\\s+/to\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
+                            Pattern.CASE_INSENSITIVE
+                    );
+                    Matcher matcher = pattern.matcher(cmd);
+
+                    if (matcher.matches()) {
+                        String task = matcher.group(1);
+                        String fromStr = matcher.group(2);
+                        String toStr = matcher.group(3);
+
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+                        LocalDateTime from = LocalDateTime.parse(fromStr, formatter);
+                        LocalDateTime to = LocalDateTime.parse(toStr, formatter);
+
+                        tasks.add(new Event(task, from, to));
                         System.out.println("🐕 Paw-some! I’ve added this task to the list:");
-                        System.out.println(tasks.get(tasks.size() - 1).toString());
-                        System.out.println(String.format("You now have (%d) task", tasks.size())
-                                + "\n" + separation);
                     } else {
-                        System.out.println("\uD83D\uDC3E Hachi sniffs around:" +
-                                " 'What's the event about? Try: event walk /from Monday /to Tuesday'"
+                        System.out.println(
+                                "🐶 Hachi tilts his head:" +
+                                        " 'I need a task, a start time, and an end time! Use it like: event <task> /from <start> /to <end>'"
+                        );
+                        System.out.println("Note: Input your time as d/M/yyyy HHmm so Hachi can understand"
                                 + "\n" + separation);
+
                     }
                     break;
                 }
+
 
                 case DELETE: {
                     String[] parts = cmd.split(" ");

@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -36,19 +37,20 @@ public class StateReader {
             case "D": {
                 String desc = parts[1];
                 boolean status = parts[2].equals("true");
-                String by = parts[3];
-                tasks.add(new Deadline(desc, status, by));
+                LocalDateTime unformatted = LocalDateTime.parse(parts[3]);
+                tasks.add(new Deadline(desc, status, unformatted));
                 break;
             }
 
             case "E": {
                 String desc = parts[1];
                 boolean status = parts[2].equals("true");
-                String from = parts[3];
-                String to = parts[4];
+                LocalDateTime from = LocalDateTime.parse(parts[3]);
+                LocalDateTime to = LocalDateTime.parse(parts[4]);
                 tasks.add(new Event(desc, status, from, to));
                 break;
             }
+
         }
         }
         return tasks;

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -23,14 +22,14 @@ public class StateSaver {
             if (current instanceof Deadline) {
                 String description = current.description.trim();
                 boolean status = current.completed;
-                String deadline = ((Deadline) current).by;
+                String deadline = ((Deadline) current).by.toString();
                 fw.write("D|" + description + "|" + status + "|" + deadline + "\n");
             }
             if (current instanceof Event) {
                 String description = current.description.trim();
                 boolean status = current.completed;
-                String from = ((Event) current).from;
-                String to = ((Event) current).to;
+                String from = ((Event) current).from.toString();
+                String to = ((Event) current).to.toString();
                 fw.write("E|" + description + "|" + status + "|" + from + "|" + to + "\n");
             }
         }
