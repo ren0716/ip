@@ -64,11 +64,13 @@ public class Hachi {
 
         String cmd = "";
         Scanner scanner = new Scanner(System.in);
-        File f = new File("ip-master/output/output.txt");
-        StateReader saved = new StateReader(f);
+        File f = new File("output/output.txt");
         ArrayList<Task> tasks = new ArrayList<>();
+        StateReader saved = new StateReader(f);
+
         try {
             tasks = saved.unpack();
+            System.out.println(tasks);
 
         } catch (IOException e) {
             System.out.println("Hachi has no prior memories");
