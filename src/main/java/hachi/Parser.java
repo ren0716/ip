@@ -45,6 +45,7 @@ public class Parser {
     private static final int DELETE = 5;
     private static final int UNKNOWN = 6;
     private static final int MISSING = 7;
+    private static final int FIND = 8;
 
     /**
      * Starts the command loop for interacting with the user.
