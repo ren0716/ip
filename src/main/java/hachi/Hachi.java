@@ -30,7 +30,7 @@ public class Hachi {
             System.out.println(tasks.tasks);
 
         } catch (IOException e) {
-            System.out.println("Hachi.Hachi has no prior memories");
+            System.out.println("Hachi has no prior memories");
             tasks = new TaskList();
         }
         file = new File(filePath);

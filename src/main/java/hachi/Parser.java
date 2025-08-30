@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * and mapped to one of these values.
  */
 enum Command {
-    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE;
+    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE, FIND;
 
     /**
      * Converts a string input into a corresponding Command.
@@ -184,12 +184,23 @@ public class Parser {
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.remove(taskNumber - 1);
                         System.out.println(
-                                "\uD83D\uDC36 \"Hachi.Hachi dug a hole and buried that task. It’s gone!\"\n" + separation);
+                                "\uD83D\uDC36 \"Hachi dug a hole and buried that task. It’s gone!\"\n" + separation);
                     } else {
                         Ui.failure(MISSING);
                     }
                 } else {
                     Ui.failure(DELETE);
+                }
+                break;
+            }
+
+            case FIND: {
+                String[] parts = cmd.split(" ", 2);
+                if (parts.length > 1) {
+                    String desc = parts[1].trim();
+                    tasks.findTasksByKeyword(desc);
+                } else {
+                    System.out.println("Hachi does not know what you want to find");
                 }
                 break;
             }

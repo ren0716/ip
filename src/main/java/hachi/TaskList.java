@@ -1,6 +1,7 @@
 package hachi;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a list of tasks, providing methods to add, delete, and manage tasks.
@@ -46,6 +47,22 @@ public class TaskList {
             this.tasks.remove(position);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // Search tasks by keyword
+    public void findTasksByKeyword(String keyword) {
+        List<Task> matchedTasks = tasks.stream()
+                .filter(task -> task.description.toLowerCase().contains(keyword.toLowerCase()))
+                .toList();
+
+        if (matchedTasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+        } else {
+            System.out.println("Here are the matching tasks in your list:");
+            for (int i = 0; i < matchedTasks.size(); i++) {
+                System.out.printf("%d. %s\n", i + 1, matchedTasks.get(i).toString());
+            }
         }
     }
 }
