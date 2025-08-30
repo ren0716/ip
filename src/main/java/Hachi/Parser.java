@@ -7,9 +7,19 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-enum Command {
+/**
+ * Enumeration of all available commands. Commands are parsed from user input
+ * and mapped to one of these values.
+ */
+ enum Command {
     LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE;
 
+    /**
+     * Converts a string input into a corresponding Command.
+     *
+     * @param input the user command input as a string
+     * @return the corresponding Command
+     */
     static Command from(String input) {
         if (input == null || input.isBlank()) return UNKNOWN;
         String first = input.trim().split("\\s+", 2)[0].toUpperCase();
@@ -21,6 +31,11 @@ enum Command {
     }
 }
 
+/**
+ * The Parser class is responsible for interpreting and executing user commands.
+ * It listens for user input and processes different types of commands such as
+ * listing tasks, marking/unmarking tasks, adding new tasks, and deleting tasks.
+ */
 public class Parser {
     private static final int TODO = 0;
     private static final int DEADLINE = 1;
@@ -31,6 +46,16 @@ public class Parser {
     private static final int UNKNOWN = 6;
     private static final int MISSING = 7;
 
+    /**
+     * Starts the command loop for interacting with the user.
+     * The loop reads commands, executes them, and updates the task list accordingly.
+     *
+     * <p>This method is responsible for handling commands such as LIST, MARK, UNMARK, TODO,
+     * DEADLINE, EVENT, DELETE, and BYE, as well as providing appropriate feedback to the user.</p>
+     *
+     * @param tasks the task list to manage
+     * @param storage the storage object for saving tasks to a file
+     */
     public static void start(TaskList tasks, Storage storage) {
 
 

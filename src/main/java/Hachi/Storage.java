@@ -8,14 +8,31 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Storage {
+/**
+ * Manages the reading and writing of task data from/to a file. This class is responsible for
+ * unpacking stored task data into task objects and saving modified or newly created task data
+ * back into a file.
+ */
+ public class Storage {
     File state;
 
-
+    /**
+     * Constructs a new Storage object for managing tasks in the specified file.
+     *
+     * @param state the file where task data is stored
+     */
     public Storage(File state) {
         this.state = state;
     }
 
+    /**
+     * Unpacks task data from the stored file and converts it into a list of Task objects.
+     * The file is read line by line, and each line is parsed to create a corresponding task object.
+     * If the file is empty or does not exist, an empty list is returned.
+     *
+     * @return a list of tasks read from the file
+     * @throws IOException if an error occurs while reading the file
+     */
     public ArrayList<Task> unpack() throws IOException {
         if (!Files.isRegularFile(state.toPath()) || Files.size(state.toPath()) == 0L) {
             return new ArrayList<>(); // nothing to parse
@@ -55,6 +72,14 @@ public class Storage {
         }
         return tasks;
     }
+
+    /**
+     * Writes a list of task objects to the file in a specific format.
+     * Each task is written on a new line in the file.
+     *
+     * @param data the list of tasks to write to the file
+     * @throws IOException if an error occurs while writing to the file
+     */
     public void write(ArrayList<Task> data) throws IOException{
         FileWriter fw = new FileWriter("output/output.txt");
         int size = data.size();

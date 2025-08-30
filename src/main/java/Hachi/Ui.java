@@ -1,6 +1,12 @@
 package Hachi;
 
-public class Ui {
+/**
+ * The Ui class handles the user interface and interaction with the user. It is responsible for
+ * displaying messages to the user, such as when tasks are successfully added, marked, unmarked,
+ * or deleted. The class also provides feedback on errors and provides a visual representation of
+ * the application, such as the welcome and exit screens.
+ */
+ public class Ui {
     private static final String separation = "_________________________________________________";
     private static final int TODO = 0;
     private static final int DEADLINE = 1;
@@ -12,10 +18,19 @@ public class Ui {
     private static final int MISSING = 7;
     private TaskList tasks;
 
+    /**
+     * Constructs a Ui instance that interacts with the provided TaskList.
+     *
+     * @param tasks the TaskList this UI will manage interactions for
+     */
     public Ui(TaskList tasks) {
         this.tasks = tasks;
     }
 
+    /**
+     * Displays the initial greeting message and application logo when the program starts.
+     * This includes the welcome message and ASCII art of the application.
+     */
     public static void start() {
         String logo =
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
@@ -40,6 +55,10 @@ public class Ui {
         System.out.println("Woof! Nice to meet you" + logo + "\n" + separation);
     }
 
+    /**
+     * Displays the exit message and application logo when the program terminates.
+     * This includes a goodbye message and ASCII art.
+     */
     public static void end() {
         String exit =
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
@@ -60,6 +79,12 @@ public class Ui {
         System.out.println("Come play again!" + exit + "\n" + separation);
     }
 
+    /**
+     * Displays a success message based on the action completed.
+     * After showing success, it also displays the updated task count.
+     *
+     * @param code an integer code representing the action (e.g., adding a task, marking a task)
+     */
     public void success(int code) {
         switch (code) {
             case TODO: // 0
@@ -95,6 +120,12 @@ public class Ui {
     }
 
 
+    /**
+     * Displays an error message based on the action that failed.
+     * Error messages guide the user to the correct format for the input.
+     *
+     * @param error an integer code representing the error (e.g., missing task, invalid command)
+     */
     public static void failure(int error) {
         switch (error) {
             case TODO:
@@ -136,6 +167,10 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays a note on how to format date and time input.
+     * Used when there are errors in deadline or event input.
+     */
     private static void printTimeNote() {
         System.out.println("Note: Input your time as d/M/yyyy HHmm so Hachi.Hachi can understand"
                 + "\n" + separation);
