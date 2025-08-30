@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import org.junit.jupiter.api.Test;
 
