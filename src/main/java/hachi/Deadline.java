@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,14 +9,14 @@ import java.util.Locale;
  * and includes an additional field to represent the time when the task is due. The task
  * will be marked as done or undone, and it will include a description and a due date.
  */
-public class Deadline extends Task{
+public class Deadline extends Task {
     LocalDateTime by;
 
     /**
      * Constructs a new Deadline object with the specified description and due date.
      *
      * @param description the description of the task
-     * @param by the due date and time of the task
+     * @param by          the due date and time of the task
      */
     public Deadline(String description, LocalDateTime by) {
         super(description);
@@ -28,8 +28,8 @@ public class Deadline extends Task{
      * and due date.
      *
      * @param description the description of the task
-     * @param status the completion status of the task
-     * @param by the due date and time of the task
+     * @param status      the completion status of the task
+     * @param by          the due date and time of the task
      */
     public Deadline(String description, boolean status, LocalDateTime by) {
         super(description, status);

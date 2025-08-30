@@ -1,11 +1,11 @@
-package Hachi;
+package hachi;
 
 /**
  * Represents a generic task with a description and a completion status. This class provides
  * basic functionality for tasks, including the ability to mark and unmark a task as completed.
  * The task also includes a description of the task and its completion state (either completed or not).
  */
- public class Task {
+public class Task {
     Boolean completed = false;
     String description;
 
@@ -22,7 +22,7 @@ package Hachi;
      * Constructs a new task with the specified description and completion status.
      *
      * @param description the description of the task
-     * @param completed the completion status of the task (true if completed, false if incomplete)
+     * @param completed   the completion status of the task (true if completed, false if incomplete)
      */
     public Task(String description, Boolean completed) {
         this.description = description;
@@ -39,7 +39,7 @@ package Hachi;
     /**
      * Marks the task as incomplete.
      */
-    public void unmark(){
+    public void unmark() {
         completed = false;
     }
 
@@ -52,6 +52,6 @@ package Hachi;
      */
     @Override
     public String toString() {
-        return String.format("[%s] %s", completed ? "X" : " ", description );
+        return String.format("[%s] %s", completed ? "X" : " ", description);
     }
 }

@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,8 +19,8 @@ public class Event extends Task {
      * Constructs a new Event object with the specified description, start time, and end time.
      *
      * @param description the description of the task
-     * @param from the start date and time of the event
-     * @param to the end date and time of the event
+     * @param from        the start date and time of the event
+     * @param to          the end date and time of the event
      */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
@@ -33,9 +33,9 @@ public class Event extends Task {
      * start time, and end time.
      *
      * @param description the description of the task
-     * @param status the completion status of the task
-     * @param from the start date and time of the event
-     * @param to the end date and time of the event
+     * @param status      the completion status of the task
+     * @param from        the start date and time of the event
+     * @param to          the end date and time of the event
      */
     public Event(String description, boolean status, LocalDateTime from, LocalDateTime to) {
         super(description, status);

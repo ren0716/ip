@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.io.IOException;
  * file storage, and user interface (UI). It handles loading existing tasks from a file,
  * interacting with the user through a parser, and saving tasks back to the file.
  */
- public class Hachi {
+public class Hachi {
     private TaskList tasks;
     private File file;
     private Storage storage;

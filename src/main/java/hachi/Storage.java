@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,7 +13,7 @@ import java.util.Scanner;
  * unpacking stored task data into task objects and saving modified or newly created task data
  * back into a file.
  */
- public class Storage {
+public class Storage {
     File state;
 
     /**
@@ -42,8 +42,8 @@ import java.util.Scanner;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
-            String taskCode  = parts[0];
-        switch (taskCode) {
+            String taskCode = parts[0];
+            switch (taskCode) {
             case "T": {
                 String desc = parts[1];
                 boolean status = parts[2].equals("true");
@@ -68,7 +68,7 @@ import java.util.Scanner;
                 break;
             }
 
-        }
+            }
         }
         return tasks;
     }
@@ -80,7 +80,7 @@ import java.util.Scanner;
      * @param data the list of tasks to write to the file
      * @throws IOException if an error occurs while writing to the file
      */
-    public void write(ArrayList<Task> data) throws IOException{
+    public void write(ArrayList<Task> data) throws IOException {
         FileWriter fw = new FileWriter("output/output.txt");
         int size = data.size();
         for (int i = 0; i < size; i++) {

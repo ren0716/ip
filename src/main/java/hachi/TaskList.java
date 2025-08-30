@@ -1,4 +1,4 @@
-package Hachi;
+package hachi;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class TaskList {
         this.tasks = new ArrayList<>();
     }
 
-     /**
+    /**
      * Constructs a TaskList with the specified list of tasks.
      */
     public TaskList(ArrayList<Task> tasks) {
