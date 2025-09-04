@@ -36,20 +36,11 @@ public class Hachi {
         file = new File(filePath);
     }
 
-    /**
-     * Starts the program and runs the command loop, allowing the user to interact with the task list.
-     * This method delegates command processing to the Parser
-     */
-    public void run() {
-        Parser.start(tasks, storage);
+    public TaskList getTasks() {
+        return tasks;
     }
 
-    /**
-     * The main method that initializes and runs the Hachi application.
-     *
-     * @param args command-line arguments (not used in this application)
-     */
-    public static void main(String[] args) {
-        new Hachi("output/output.txt").run();
+    public Storage getStorage() {
+        return storage;
     }
 }

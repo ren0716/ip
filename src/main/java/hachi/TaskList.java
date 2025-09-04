@@ -51,18 +51,21 @@ public class TaskList {
     }
 
     // Search tasks by keyword
-    public void findTasksByKeyword(String keyword) {
+    public String findTasksByKeyword(String keyword) {
+        StringBuilder sb = new StringBuilder();
         List<Task> matchedTasks = tasks.stream()
                 .filter(task -> task.description.toLowerCase().contains(keyword.toLowerCase()))
                 .toList();
 
         if (matchedTasks.isEmpty()) {
-            System.out.println("No matching tasks found.");
+            sb.append("no matching task found");
+            return sb.toString();
         } else {
-            System.out.println("Here are the matching tasks in your list:");
+            sb.append("Here are the matching tasks in your list:\n");
             for (int i = 0; i < matchedTasks.size(); i++) {
-                System.out.printf("%d. %s\n", i + 1, matchedTasks.get(i).toString());
+                sb.append(String.format("%d. %s\n", i + 1, matchedTasks.get(i).toString()));
             }
+            return sb.toString();
         }
     }
 }
