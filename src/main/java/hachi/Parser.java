@@ -3,7 +3,6 @@ package hachi;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,26 +56,25 @@ public class Parser {
      * @param tasks   the task list to manage
      * @param storage the storage object for saving tasks to a file
      */
-    public static void start(TaskList tasks, Storage storage) {
+    public static String parse(TaskList tasks, Storage storage, String input) {
 
-
-        String separation = "_________________________________________________";
-        String cmd = "";
-        Scanner scanner = new Scanner(System.in);
         Ui ui = new Ui(tasks);
         Ui.start();
+        Command command = Command.from(input);
 
-        while (true) {
-            cmd = scanner.nextLine();
-            Command command = Command.from(cmd);
-
-            switch (command) {
+        switch (command) {
             case LIST:
+                StringBuilder sb = new StringBuilder();
+                if (tasks.tasks.size() == 0) {
+                    return "Looks like you are all done!";
+                }
+                sb.append("Here you go!\n");
                 for (int i = 0; i < tasks.tasks.size(); i++) {
                     Task current = tasks.tasks.get(i);
-                    System.out.println((i + 1) + ". " + current.toString());
+                    sb.append(String.format("%d. %s", i + 1, current.toString()));
+                    sb.append("\n");
                 }
-                break;
+                return sb.toString();
 
             case BYE:
                 try {
@@ -84,50 +82,46 @@ public class Parser {
                 } catch (IOException e) {
                     System.out.println("file not storage");
                 }
-                Ui.end();
-                return;
+                return Ui.end();
 
             case UNMARK: {
-                String[] parts = cmd.split(" ");
+                String[] parts = input.split(" ");
                 if (parts.length > 1) {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.get(taskNumber - 1).unmark();
-                        ui.success(UNMARK);
+                        return ui.success(UNMARK);
                     } else {
-                        Ui.failure(UNMARK);
+                        return Ui.failure(MISSING);
                     }
                 } else {
-                    Ui.failure(UNMARK);
+                    return Ui.failure(UNMARK);
                 }
-                break;
             }
 
             case MARK: {
-                String[] parts = cmd.split(" ");
+                String[] parts = input.split(" ");
                 if (parts.length > 1) {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.get(taskNumber - 1).mark();
-                        ui.success(MARK);
+                        return ui.success(MARK);
                     } else {
-                        Ui.failure(MISSING);
+                        return Ui.failure(MISSING);
                     }
                 } else {
-                    Ui.failure(MARK);
+                    return Ui.failure(MARK);
                 }
-                break;
             }
 
             case TODO: {
-                String[] parts = cmd.split(" ", 2);
+                String[] parts = input.split(" ", 2);
                 if (parts.length > 1) {
                     tasks.tasks.add(new ToDo(parts[1]));
-                    ui.success(TODO);
+                    return ui.success(TODO);
                 } else {
-                    Ui.failure(TODO);
+                    return Ui.failure(TODO);
                 }
-                break;
             }
 
             case DEADLINE: {
@@ -135,7 +129,7 @@ public class Parser {
                         "^deadline\\s+(.*?)\\s+/by\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
                         Pattern.CASE_INSENSITIVE
                 );
-                Matcher matcher = pattern.matcher(cmd);
+                Matcher matcher = pattern.matcher(input);
 
                 if (matcher.matches()) {
                     String task = matcher.group(1);
@@ -143,12 +137,11 @@ public class Parser {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
                     LocalDateTime dateTime = LocalDateTime.parse(by, formatter);
                     tasks.tasks.add(new Deadline(task, dateTime));
-                    ui.success(DEADLINE);
+                    return ui.success(DEADLINE);
 
                 } else {
-                    Ui.failure(DEADLINE);
+                    return Ui.failure(DEADLINE);
                 }
-                break;
             }
 
 
@@ -157,7 +150,7 @@ public class Parser {
                         "^event\\s+(.*?)\\s+/from\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})\\s+/to\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
                         Pattern.CASE_INSENSITIVE
                 );
-                Matcher matcher = pattern.matcher(cmd);
+                Matcher matcher = pattern.matcher(input);
 
                 if (matcher.matches()) {
                     String task = matcher.group(1);
@@ -169,47 +162,43 @@ public class Parser {
                     LocalDateTime to = LocalDateTime.parse(toStr, formatter);
 
                     tasks.tasks.add(new Event(task, from, to));
-                    ui.success(EVENT);
+                    return ui.success(EVENT);
                 } else {
-                    Ui.failure(EVENT);
+                    return Ui.failure(EVENT);
 
                 }
-                break;
             }
 
 
             case DELETE: {
-                String[] parts = cmd.split(" ");
+                String[] parts = input.split(" ");
                 if (parts.length > 1) {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.remove(taskNumber - 1);
-                        System.out.println(
-                                "\uD83D\uDC36 \"Hachi dug a hole and buried that task. It’s gone!\"\n" + separation);
+                        return ui.success(DELETE);
                     } else {
-                        Ui.failure(MISSING);
+                        return Ui.failure(MISSING);
                     }
                 } else {
-                    Ui.failure(DELETE);
+                    return Ui.failure(DELETE);
                 }
-                break;
             }
 
             case FIND: {
-                String[] parts = cmd.split(" ", 2);
+                String[] parts = input.split(" ", 2);
                 if (parts.length > 1) {
                     String desc = parts[1].trim();
-                    tasks.findTasksByKeyword(desc);
+                    return tasks.findTasksByKeyword(desc);
                 } else {
-                    System.out.println("Hachi does not know what you want to find");
+                    return Ui.failure(FIND);
                 }
-                break;
             }
 
             case UNKNOWN:
             default:
-                Ui.failure(UNKNOWN);
-            }
+                return Ui.failure(UNKNOWN);
         }
     }
 }
+
