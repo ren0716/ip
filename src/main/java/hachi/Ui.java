@@ -6,16 +6,6 @@ package hachi;
  * can decide how to display or test them.
  */
 public class Ui {
-    private static final String SEPARATION = "_________________________________________________";
-    private static final int TODO = 0;
-    private static final int DEADLINE = 1;
-    private static final int EVENT = 2;
-    private static final int MARK = 3;
-    private static final int UNMARK = 4;
-    private static final int DELETE = 5;
-    private static final int UNKNOWN = 6;
-    private static final int MISSING = 7;
-    private static final int FIND = 8;
     private TaskList tasks;
 
     /**
@@ -41,7 +31,7 @@ public class Ui {
         return "Come play again!\n";
     }
 
-    public String success(int code) {
+    public String success(CommandCode code) {
         StringBuilder sb = new StringBuilder();
         switch (code) {
             case TODO:
@@ -75,7 +65,7 @@ public class Ui {
     /**
      * Returns an error message based on the action that failed.
      */
-    public static String failure(int error) {
+    public static String failure(CommandCode error) {
         StringBuilder sb = new StringBuilder();
         switch (error) {
             case TODO:
@@ -116,6 +106,6 @@ public class Ui {
     }
 
     private static String printTimeNote() {
-        return "Note: Input your time as d/M/yyyy HHmm so Hachi can understand\n" + SEPARATION;
+        return "Note: Input your time as d/M/yyyy HHmm so Hachi can understand\n";
     }
 }

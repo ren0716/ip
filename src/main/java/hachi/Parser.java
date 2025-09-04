@@ -36,15 +36,6 @@ enum Command {
  * listing tasks, marking/unmarking tasks, adding new tasks, and deleting tasks.
  */
 public class Parser {
-    private static final int TODO = 0;
-    private static final int DEADLINE = 1;
-    private static final int EVENT = 2;
-    private static final int MARK = 3;
-    private static final int UNMARK = 4;
-    private static final int DELETE = 5;
-    private static final int UNKNOWN = 6;
-    private static final int MISSING = 7;
-    private static final int FIND = 8;
 
     /**
      * Starts the command loop for interacting with the user.
@@ -90,12 +81,12 @@ public class Parser {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.get(taskNumber - 1).unmark();
-                        return ui.success(UNMARK);
+                        return ui.success(CommandCode.UNMARK);
                     } else {
-                        return Ui.failure(MISSING);
+                        return Ui.failure(CommandCode.MISSING);
                     }
                 } else {
-                    return Ui.failure(UNMARK);
+                    return Ui.failure(CommandCode.UNMARK);
                 }
             }
 
@@ -105,12 +96,12 @@ public class Parser {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.get(taskNumber - 1).mark();
-                        return ui.success(MARK);
+                        return ui.success(CommandCode.MARK);
                     } else {
-                        return Ui.failure(MISSING);
+                        return Ui.failure(CommandCode.MISSING);
                     }
                 } else {
-                    return Ui.failure(MARK);
+                    return Ui.failure(CommandCode.MARK);
                 }
             }
 
@@ -118,9 +109,9 @@ public class Parser {
                 String[] parts = input.split(" ", 2);
                 if (parts.length > 1) {
                     tasks.tasks.add(new ToDo(parts[1]));
-                    return ui.success(TODO);
+                    return ui.success(CommandCode.TODO);
                 } else {
-                    return Ui.failure(TODO);
+                    return Ui.failure(CommandCode.TODO);
                 }
             }
 
@@ -137,10 +128,10 @@ public class Parser {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
                     LocalDateTime dateTime = LocalDateTime.parse(by, formatter);
                     tasks.tasks.add(new Deadline(task, dateTime));
-                    return ui.success(DEADLINE);
+                    return ui.success(CommandCode.DEADLINE);
 
                 } else {
-                    return Ui.failure(DEADLINE);
+                    return Ui.failure(CommandCode.DEADLINE);
                 }
             }
 
@@ -162,9 +153,9 @@ public class Parser {
                     LocalDateTime to = LocalDateTime.parse(toStr, formatter);
 
                     tasks.tasks.add(new Event(task, from, to));
-                    return ui.success(EVENT);
+                    return ui.success(CommandCode.EVENT);
                 } else {
-                    return Ui.failure(EVENT);
+                    return Ui.failure(CommandCode.EVENT);
 
                 }
             }
@@ -176,12 +167,12 @@ public class Parser {
                     int taskNumber = Integer.parseInt(parts[1]);
                     if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
                         tasks.tasks.remove(taskNumber - 1);
-                        return ui.success(DELETE);
+                        return ui.success(CommandCode.DELETE);
                     } else {
-                        return Ui.failure(MISSING);
+                        return Ui.failure(CommandCode.MISSING);
                     }
                 } else {
-                    return Ui.failure(DELETE);
+                    return Ui.failure(CommandCode.DELETE);
                 }
             }
 
@@ -191,13 +182,13 @@ public class Parser {
                     String desc = parts[1].trim();
                     return tasks.findTasksByKeyword(desc);
                 } else {
-                    return Ui.failure(FIND);
+                    return Ui.failure(CommandCode.FIND);
                 }
             }
 
             case UNKNOWN:
             default:
-                return Ui.failure(UNKNOWN);
+                return Ui.failure(CommandCode.UNKNOWN);
         }
     }
 }
