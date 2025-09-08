@@ -26,6 +26,13 @@ public class TaskList {
         this.tasks = tasks;
     }
 
+    /** returns tasks
+     */
+
+    public ArrayList<Task> getTasks() {
+        return this.tasks;
+    }
+
     /**
      * Adds a new task to the list.
      *

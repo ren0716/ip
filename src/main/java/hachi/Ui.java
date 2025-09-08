@@ -1,5 +1,6 @@
 package hachi;
 
+
 /**
  * The Ui class handles the user interface and interaction with the user.
  * Instead of printing directly, all methods return Strings so the caller
@@ -100,6 +101,11 @@ public class Ui {
             case FIND:
                 sb.append("🐶 Hachi sniffed around but couldn’t find any matching tasks.\n");
                 sb.append("Try a different keyword?\n");
+                break;
+            case BYE:
+                sb.append("🐶 Hachi tried to save your tasks, but something went wrong.\n");
+                sb.append("It seems like there was an issue with the storage.\n");
+                sb.append("Please check your storage or try again later.\n");
                 break;
         }
         return sb.toString();
