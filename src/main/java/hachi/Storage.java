@@ -43,11 +43,14 @@ public class Storage {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
             String taskCode = parts[0];
+            // Flag to track if the variable is part of any switch case
+            boolean isCaseFound = false;
             switch (taskCode) {
             case "T": {
                 String desc = parts[1];
                 boolean status = parts[2].equals("true");
                 tasks.add(new ToDo(desc, status));
+                isCaseFound = true;
                 break;
             }
 
@@ -56,6 +59,7 @@ public class Storage {
                 boolean status = parts[2].equals("true");
                 LocalDateTime unformatted = LocalDateTime.parse(parts[3]);
                 tasks.add(new Deadline(desc, status, unformatted));
+                isCaseFound = true;
                 break;
             }
 
@@ -65,10 +69,11 @@ public class Storage {
                 LocalDateTime from = LocalDateTime.parse(parts[3]);
                 LocalDateTime to = LocalDateTime.parse(parts[4]);
                 tasks.add(new Event(desc, status, from, to));
+                isCaseFound = true;
                 break;
             }
-
             }
+            assert isCaseFound : "invalid switch case found";
         }
         return tasks;
     }
@@ -103,6 +108,7 @@ public class Storage {
                 String to = ((Event) current).to.toString();
                 fw.write("E|" + description + "|" + status + "|" + from + "|" + to + "\n");
             }
+            assert current != null : "invalid input not caught";
         }
         fw.close();
     }

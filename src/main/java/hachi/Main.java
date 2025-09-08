@@ -20,7 +20,6 @@ public class Main extends Application {
             scene.getStylesheets().add(
                     getClass().getResource("/view/dialog.css").toExternalForm()
             );
-
             stage.setScene(scene);
             fxmlLoader.<MainWindow>getController().setHachi(hachi);  // inject bot
             stage.show();
