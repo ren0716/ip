@@ -26,6 +26,8 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     public void initialize() {
+        assert userImage != null : "Failed to load user image!";
+        assert dukeImage != null : "Failed to load duke image!";
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         dialogContainer.setFillWidth(true);
         dialogContainer.setAlignment(Pos.TOP_LEFT);
@@ -46,6 +48,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
+        assert !input.trim().isEmpty() : "User input is empty!";
         String response = Parser.parse(hachi.getTasks(), hachi.getStorage(), input);
 
         dialogContainer.getChildren().addAll(
