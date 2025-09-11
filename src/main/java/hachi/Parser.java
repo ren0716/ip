@@ -7,7 +7,7 @@ import handler.*;
  * and mapped to one of these values.
  */
 enum Command {
-    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE, FIND, NOTE;
+    LIST, BYE, MARK, UNMARK, TODO, DEADLINE, EVENT, UNKNOWN, DELETE, FIND, NOTE, DISPLAY;
 
     /**
      * Converts a string input into a corresponding Command.
@@ -94,6 +94,10 @@ public class Parser {
         case NOTE:
             NoteHandler noteHandler = new NoteHandler(input, ui);
             return noteHandler.execute(tasks);
+
+        case DISPLAY:
+            DisplayHandler displayHandler = new DisplayHandler(input, ui);
+            return displayHandler.execute(tasks);
 
 
         default:

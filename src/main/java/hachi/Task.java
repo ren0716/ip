@@ -76,4 +76,11 @@ public class Task {
         }
         return this.note.toString();
     }
+
+    /**
+     * Returns reference of the associated note
+     */
+    public Note getNote() {
+        return note;
+    }
 }

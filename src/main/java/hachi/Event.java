@@ -51,9 +51,8 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy, ha", Locale.ENGLISH);
-        String formattedFrom = from.format(formatter);
-        String formattedTo = to.format(formatter);
+        String formattedFrom = new DateFormatter().formatTime(from);
+        String formattedTo = new DateFormatter().formatTime(to);
         return "[E]" + super.toString() + String.format(" | From: %s | To: %s", formattedFrom, formattedTo);
     }
 }
