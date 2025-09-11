@@ -1,5 +1,7 @@
 package hachi;
 
+import handler.*;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -55,140 +57,53 @@ public class Parser {
 
         switch (command) {
             case LIST:
-                StringBuilder sb = new StringBuilder();
-                if (tasks.tasks.size() == 0) {
-                    return "Looks like you are all done!";
-                }
-                sb.append("Here you go!\n");
-                for (int i = 0; i < tasks.tasks.size(); i++) {
-                    Task current = tasks.tasks.get(i);
-                    sb.append(String.format("%d. %s", i + 1, current.toString()));
-                    sb.append("\n");
-                }
-                return sb.toString();
+                ListHandler handler = new ListHandler();
+                return handler.execute(tasks);
 
             case BYE:
-                try {
-                    storage.write(tasks.tasks);
-                } catch (IOException e) {
-                    System.out.println("file not storage");
-                }
-                return Ui.end();
-
-            case UNMARK: {
-                String[] parts = input.split(" ");
-                if (parts.length > 1) {
-                    int taskNumber = Integer.parseInt(parts[1]);
-                    if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
-                        tasks.tasks.get(taskNumber - 1).unmark();
-                        return ui.success(CommandCode.UNMARK);
-                    } else {
-                        return Ui.failure(CommandCode.MISSING);
-                    }
-                } else {
-                    return Ui.failure(CommandCode.UNMARK);
-                }
-            }
-
-            case MARK: {
-                String[] parts = input.split(" ");
-                if (parts.length > 1) {
-                    int taskNumber = Integer.parseInt(parts[1]);
-                    if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
-                        tasks.tasks.get(taskNumber - 1).mark();
-                        return ui.success(CommandCode.MARK);
-                    } else {
-                        return Ui.failure(CommandCode.MISSING);
-                    }
-                } else {
-                    return Ui.failure(CommandCode.MARK);
-                }
-            }
-
-            case TODO: {
-                String[] parts = input.split(" ", 2);
-                if (parts.length > 1) {
-                    tasks.tasks.add(new ToDo(parts[1]));
-                    return ui.success(CommandCode.TODO);
-                } else {
-                    return Ui.failure(CommandCode.TODO);
-                }
-            }
-
-            case DEADLINE: {
-                Pattern pattern = Pattern.compile(
-                        "^deadline\\s+(.*?)\\s+/by\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
-                        Pattern.CASE_INSENSITIVE
-                );
-                Matcher matcher = pattern.matcher(input);
-
-                if (matcher.matches()) {
-                    String task = matcher.group(1);
-                    String by = matcher.group(2);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-                    LocalDateTime dateTime = LocalDateTime.parse(by, formatter);
-                    tasks.tasks.add(new Deadline(task, dateTime));
-                    return ui.success(CommandCode.DEADLINE);
-
-                } else {
-                    return Ui.failure(CommandCode.DEADLINE);
-                }
-            }
+                ByeHandler byeHandler = new ByeHandler(storage);
+                return byeHandler.execute(tasks);
 
 
-            case EVENT: {
-                Pattern pattern = Pattern.compile(
-                        "^event\\s+(.*?)\\s+/from\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})\\s+/to\\s+(\\d{1,2}/\\d{1,2}/\\d{4}\\s+\\d{4})$",
-                        Pattern.CASE_INSENSITIVE
-                );
-                Matcher matcher = pattern.matcher(input);
+            case UNMARK:
+                UnmarkHandler unmarkHandler = new UnmarkHandler(input, ui);
+                return unmarkHandler.execute(tasks);
 
-                if (matcher.matches()) {
-                    String task = matcher.group(1);
-                    String fromStr = matcher.group(2);
-                    String toStr = matcher.group(3);
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-                    LocalDateTime from = LocalDateTime.parse(fromStr, formatter);
-                    LocalDateTime to = LocalDateTime.parse(toStr, formatter);
-
-                    tasks.tasks.add(new Event(task, from, to));
-                    return ui.success(CommandCode.EVENT);
-                } else {
-                    return Ui.failure(CommandCode.EVENT);
-
-                }
-            }
+            case MARK:
+                MarkHandler markHandler = new MarkHandler(input, ui);
+                return markHandler.execute(tasks);
 
 
-            case DELETE: {
-                String[] parts = input.split(" ");
-                if (parts.length > 1) {
-                    int taskNumber = Integer.parseInt(parts[1]);
-                    if (taskNumber >= 1 && taskNumber <= tasks.tasks.size()) {
-                        tasks.tasks.remove(taskNumber - 1);
-                        return ui.success(CommandCode.DELETE);
-                    } else {
-                        return Ui.failure(CommandCode.MISSING);
-                    }
-                } else {
-                    return Ui.failure(CommandCode.DELETE);
-                }
-            }
+            case TODO:
+                TodoHandler todoHandler = new TodoHandler(input, ui);
+                return todoHandler.execute(tasks);
 
-            case FIND: {
-                String[] parts = input.split(" ", 2);
-                if (parts.length > 1) {
-                    String desc = parts[1].trim();
-                    return tasks.findTasksByKeyword(desc);
-                } else {
-                    return Ui.failure(CommandCode.FIND);
-                }
-            }
 
-            case UNKNOWN:
+            case DEADLINE:
+                DeadlineHandler deadlineHandler = new DeadlineHandler(input, ui);
+                return deadlineHandler.execute(tasks);
+
+
+
+            case EVENT:
+                EventHandler eventHandler = new EventHandler(input, ui);
+                return eventHandler.execute(tasks);
+
+
+
+            case DELETE:
+               DeleteHandler deleteHandler = new DeleteHandler(input, ui);
+               return deleteHandler.execute(tasks);
+
+
+            case FIND:
+               FindHandler findHandler = new FindHandler(input, ui);
+               return findHandler.execute(tasks);
+
+
             default:
-                return Ui.failure(CommandCode.UNKNOWN);
+                UnknownHandler unknownHandler = new UnknownHandler();
+                return unknownHandler.execute(tasks);
         }
     }
 }
