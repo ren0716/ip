@@ -57,6 +57,19 @@ public class TaskList {
         }
     }
 
+    /**
+     * Returns task at specified index
+     * @param idx index of returned task
+     * @return
+     */
+    public Task getTaskAt(int idx) {
+        try {
+            return this.tasks.get(idx);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Search tasks by keyword
     public String findTasksByKeyword(String keyword) {
         StringBuilder sb = new StringBuilder();

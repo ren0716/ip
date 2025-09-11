@@ -14,15 +14,17 @@ import java.util.Scanner;
  * back into a file.
  */
 public class Storage {
-    File state;
+    File taskData;
+    File noteData;
 
     /**
      * Constructs a new Storage object for managing tasks in the specified file.
      *
-     * @param state the file where task data is stored
+     * @param taskData the file where task data is stored
      */
-    public Storage(File state) {
-        this.state = state;
+    public Storage(File taskData, File noteData) {
+        this.taskData = taskData;
+        this.noteData = noteData;
     }
 
     /**
@@ -34,11 +36,11 @@ public class Storage {
      * @throws IOException if an error occurs while reading the file
      */
     public ArrayList<Task> unpack() throws IOException {
-        if (!Files.isRegularFile(state.toPath()) || Files.size(state.toPath()) == 0L) {
+        if (!Files.isRegularFile(taskData.toPath()) || Files.size(taskData.toPath()) == 0L) {
             return new ArrayList<>(); // nothing to parse
         }
         ArrayList<Task> tasks = new ArrayList<>();
-        Scanner scanner = new Scanner(state.toPath());
+        Scanner scanner = new Scanner(taskData.toPath());
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
@@ -75,6 +77,7 @@ public class Storage {
             }
             assert isCaseFound : "invalid switch case found";
         }
+        readNoteData(tasks);
         return tasks;
     }
 
@@ -110,6 +113,64 @@ public class Storage {
             }
             assert current != null : "invalid input not caught";
         }
+
         fw.close();
+
+        writeNote(data);
+    }
+
+    /**
+     * Writes all note objects associated to a list of task objects in a specific format
+     *
+     * @param data the list of tasks to write to the file
+     * @throws IOException if an error occurs while writing to the file
+     */
+    public void writeNote(ArrayList<Task> data) throws IOException {
+        FileWriter fw = new FileWriter("output/note.txt");
+        int size = data.size();
+        for (int i = 0; i < size; i++) {
+            Task current = data.get(i);
+            String currentNote = String.valueOf(current.printNote());
+            if ("null".equals(currentNote)) {
+                fw.write("\n");
+                continue;
+            }
+            fw.write(currentNote + "\n");
+        }
+
+        fw.close();
+    }
+
+    /**
+     * Reads notes data from stored file and maps them to associated task
+     * The file is read line by line, every 2 lines is parsed to create a corresponding note object
+     * If a line is empty, it will be skipped and task will not have a note
+     *
+     * @param tasks list of task to apply notes to
+     * @throws IOException if an error occurs while writing to the file
+     */
+    public void readNoteData(ArrayList<Task> tasks) throws IOException {
+        if (!Files.isRegularFile(noteData.toPath()) || Files.size(noteData.toPath()) == 0L) {
+            return;
+        }
+        Scanner scanner = new Scanner(noteData.toPath());
+        int index = 0;
+        while (scanner.hasNextLine()) {
+            String information = scanner.nextLine();
+
+            //current task does not have a note
+            if (information.isEmpty()) {
+                index++;
+                continue;
+            }
+
+            String unFormattedTime = scanner.nextLine();
+            LocalDateTime ParsedTime = new DateFormatter()
+                    .parseTime(unFormattedTime
+                            .substring(unFormattedTime.indexOf(" ")).trim());
+
+            tasks.get(index).addNote(information, ParsedTime); //add note
+            index++;
+        }
     }
 }

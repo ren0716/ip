@@ -7,7 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private Hachi hachi = new Hachi("output/output.txt");
+    private Hachi hachi = new Hachi("output/output.txt", "output/note.txt");
 
     @Override
     public void start(Stage stage) {
