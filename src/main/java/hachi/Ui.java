@@ -117,6 +117,8 @@ public class Ui {
         case NOTE:
             sb.append("What should Hachi know about this task?\n");
             sb.append("Try: Note <TaskNumber> <additional notes>\n");
+        case DISPLAY:
+            sb.append("Hachi cannot remember anything regarding this task\n");
         }
         return sb.toString();
     }

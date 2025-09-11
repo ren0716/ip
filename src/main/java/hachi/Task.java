@@ -67,7 +67,7 @@ public class Task {
     }
 
     /**
-     * Returns the string representation of the note if it exist
+     * Returns the string representation of the note if it exists
      * else return null
      */
     public String printNote() {

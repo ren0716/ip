@@ -10,7 +10,8 @@ import java.io.IOException;
  */
 public class Hachi {
     private TaskList tasks;
-    private File file;
+    private File taskFile;
+    private File noteFile;
     private Storage storage;
     private Ui ui;
 
@@ -20,11 +21,13 @@ public class Hachi {
      * <p>The constructor attempts to load the task list from the specified file. If loading fails,
      * a new empty task list is created.</p>
      *
-     * @param filePath the path to the file where tasks are saved
+     * @param taskPath the path to the file where tasks are saved
+     * @param notePath the path to the file where notes are saved
      */
-    public Hachi(String filePath) {
-        file = new File(filePath);
-        storage = new Storage(file);
+    public Hachi(String taskPath, String notePath) {
+        taskFile = new File(taskPath);
+        noteFile = new File(notePath);
+        storage = new Storage(taskFile, noteFile);
         try {
             tasks = new TaskList(storage.unpack());
             System.out.println(tasks.tasks);
