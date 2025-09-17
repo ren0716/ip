@@ -32,13 +32,13 @@ example:
 
 This creates a deadline type task that has a deadline timing of 5/5/2025 2359
 
-### List all task: *list*
+## List all task: *list*
 displays all task
 
 Format:
 >list
 
-### Delete a task: *delete*
+## Delete a task: *delete*
 removes a specified task
 
 Format:
@@ -49,7 +49,7 @@ example:
 
 This removes task no.1 on the list
 
-### Do/Undo a task: *mark unmark*
+## Do/Undo a task: *mark unmark*
 change the completion status of a task
 
 Format:
@@ -60,13 +60,13 @@ Format:
 + marked task will be displayed with an [X] with the list command
 - unmarked task will be displayed with an [ ] with the list command
 
-### Save and Exit: *bye*
+## Save and Exit: *bye*
 saves your current task list and exits the app
 
 Format:
 >bye
 
-### Locating a task by description: *Find*
+## Locating a task by description: *Find*
 displays a list of task that matches given keyword
 
 Format:
@@ -76,7 +76,7 @@ Format:
 * order of keywords matters. e.g hello there will not match there hello
 - partial words will be matched. e.g he will match hello
 
-### Add notes to task: *note*
+## Add notes to task: *note*
 adds additional information to a task
 
 Format:
@@ -89,7 +89,7 @@ This adds a note to task 1 that captures:
 + time of creation according to local device time
 + the description *wear dress*
 
-### Display notes of a task: *display*
+## Display notes of a task: *display*
 show the notes of a task
 
 Format:
