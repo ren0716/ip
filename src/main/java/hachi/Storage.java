@@ -40,7 +40,7 @@ public class Storage {
             return new ArrayList<>(); // nothing to parse
         }
         ArrayList<Task> tasks = new ArrayList<>();
-        Scanner scanner = new Scanner(taskData.toPath());
+        Scanner scanner = new Scanner(taskData);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             String[] parts = line.split("\\|");
@@ -89,7 +89,7 @@ public class Storage {
      * @throws IOException if an error occurs while writing to the file
      */
     public void write(ArrayList<Task> data) throws IOException {
-        FileWriter fw = new FileWriter("output/output.txt");
+        FileWriter fw = new FileWriter(taskData);
         int size = data.size();
         for (int i = 0; i < size; i++) {
             Task current = data.get(i);
@@ -126,7 +126,7 @@ public class Storage {
      * @throws IOException if an error occurs while writing to the file
      */
     public void writeNote(ArrayList<Task> data) throws IOException {
-        FileWriter fw = new FileWriter("output/note.txt");
+        FileWriter fw = new FileWriter(noteData);
         int size = data.size();
         for (int i = 0; i < size; i++) {
             Task current = data.get(i);
@@ -153,7 +153,7 @@ public class Storage {
         if (!Files.isRegularFile(noteData.toPath()) || Files.size(noteData.toPath()) == 0L) {
             return;
         }
-        Scanner scanner = new Scanner(noteData.toPath());
+        Scanner scanner = new Scanner(noteData);
         int index = 0;
         while (scanner.hasNextLine()) {
             String information = scanner.nextLine();
