@@ -9,168 +9,224 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Manages the reading and writing of task data from/to a file. This class is responsible for
- * unpacking stored task data into task objects and saving modified or newly created task data
- * back into a file.
+ * Manages the reading and writing of task and note data from/to files.
+ * Responsible for unpacking stored task data into task objects,
+ * saving modified or newly created task data, and mapping notes to tasks.
  */
 public class Storage {
-    File taskData;
-    File noteData;
+    private final File taskData;
+    private final File noteData;
 
     /**
-     * Constructs a new Storage object for managing tasks in the specified file.
+     * Constructs a new Storage object for managing tasks and notes.
      *
      * @param taskData the file where task data is stored
+     * @param noteData the file where note data is stored
      */
     public Storage(File taskData, File noteData) {
         this.taskData = taskData;
         this.noteData = noteData;
     }
 
+    // ------------------ UNPACK ------------------
+
     /**
-     * Unpacks task data from the stored file and converts it into a list of Task objects.
-     * The file is read line by line, and each line is parsed to create a corresponding task object.
-     * If the file is empty or does not exist, an empty list is returned.
+     * Unpacks task data from the task file into a list of Task objects.
+     * Also reads and attaches notes to their associated tasks.
      *
-     * @return a list of tasks read from the file
-     * @throws IOException if an error occurs while reading the file
+     * @return a list of tasks read from the task file
+     * @throws IOException if an error occurs while reading task or note files
      */
     public ArrayList<Task> unpack() throws IOException {
-        if (!Files.isRegularFile(taskData.toPath()) || Files.size(taskData.toPath()) == 0L) {
-            return new ArrayList<>(); // nothing to parse
+        if (isFileEmpty(taskData)) {
+            return new ArrayList<>();
         }
-        ArrayList<Task> tasks = new ArrayList<>();
-        Scanner scanner = new Scanner(taskData);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String[] parts = line.split("\\|");
-            String taskCode = parts[0];
-            // Flag to track if the variable is part of any switch case
-            boolean isCaseFound = false;
-            switch (taskCode) {
-            case "T": {
-                String desc = parts[1];
-                boolean status = parts[2].equals("true");
-                tasks.add(new ToDo(desc, status));
-                isCaseFound = true;
-                break;
-            }
-
-            case "D": {
-                String desc = parts[1];
-                boolean status = parts[2].equals("true");
-                LocalDateTime unformatted = LocalDateTime.parse(parts[3]);
-                tasks.add(new Deadline(desc, status, unformatted));
-                isCaseFound = true;
-                break;
-            }
-
-            case "E": {
-                String desc = parts[1];
-                boolean status = parts[2].equals("true");
-                LocalDateTime from = LocalDateTime.parse(parts[3]);
-                LocalDateTime to = LocalDateTime.parse(parts[4]);
-                tasks.add(new Event(desc, status, from, to));
-                isCaseFound = true;
-                break;
-            }
-            }
-            assert isCaseFound : "invalid switch case found";
-        }
+        ArrayList<Task> tasks = readTasksFromFile();
         readNoteData(tasks);
         return tasks;
     }
 
     /**
-     * Writes a list of task objects to the file in a specific format.
-     * Each task is written on a new line in the file.
+     * Reads all task data lines from the task file and parses them into Task objects.
      *
-     * @param data the list of tasks to write to the file
-     * @throws IOException if an error occurs while writing to the file
+     * @return a list of parsed tasks
+     * @throws IOException if an error occurs while reading the file
+     */
+    private ArrayList<Task> readTasksFromFile() throws IOException {
+        ArrayList<Task> tasks = new ArrayList<>();
+        try (Scanner scanner = new Scanner(taskData)) {
+            while (scanner.hasNextLine()) {
+                tasks.add(parseTask(scanner.nextLine()));
+            }
+        }
+        return tasks;
+    }
+
+    /**
+     * Parses a single line of task data into a Task object.
+     *
+     * @param line the raw string from the task file
+     * @return a Task object corresponding to the parsed line
+     * @throws IllegalArgumentException if the task code is invalid
+     */
+    private Task parseTask(String line) {
+        String[] parts = line.split("\\|");
+        String taskCode = parts[0];
+        return switch (taskCode) {
+            case "T" -> parseToDo(parts);
+            case "D" -> parseDeadline(parts);
+            case "E" -> parseEvent(parts);
+            default -> throw new IllegalArgumentException("Invalid task code: " + taskCode);
+        };
+    }
+
+    /**
+     * Parses task data into a ToDo task.
+     *
+     * @param parts the split data fields from the task line
+     * @return a ToDo task
+     */
+    private ToDo parseToDo(String[] parts) {
+        return new ToDo(parts[1], Boolean.parseBoolean(parts[2]));
+    }
+
+    /**
+     * Parses task data into a Deadline task.
+     *
+     * @param parts the split data fields from the task line
+     * @return a Deadline task
+     */
+    private Deadline parseDeadline(String[] parts) {
+        return new Deadline(parts[1], Boolean.parseBoolean(parts[2]), LocalDateTime.parse(parts[3]));
+    }
+
+    /**
+     * Parses task data into an Event task.
+     *
+     * @param parts the split data fields from the task line
+     * @return an Event task
+     */
+    private Event parseEvent(String[] parts) {
+        return new Event(parts[1], Boolean.parseBoolean(parts[2]),
+                LocalDateTime.parse(parts[3]), LocalDateTime.parse(parts[4]));
+    }
+
+    // ------------------ WRITE ------------------
+
+    /**
+     * Writes both tasks and associated notes to their respective files.
+     *
+     * @param data the list of tasks to save
+     * @throws IOException if an error occurs while writing
      */
     public void write(ArrayList<Task> data) throws IOException {
-        FileWriter fw = new FileWriter(taskData);
-        int size = data.size();
-        for (int i = 0; i < size; i++) {
-            Task current = data.get(i);
-            if (current instanceof ToDo) {
-                String description = current.description;
-                boolean status = current.completed;
-                fw.write("T|" + description + "|" + status + "\n");
-            }
-            if (current instanceof Deadline) {
-                String description = current.description.trim();
-                boolean status = current.completed;
-                String deadline = ((Deadline) current).by.toString();
-                fw.write("D|" + description + "|" + status + "|" + deadline + "\n");
-            }
-            if (current instanceof Event) {
-                String description = current.description.trim();
-                boolean status = current.completed;
-                String from = ((Event) current).from.toString();
-                String to = ((Event) current).to.toString();
-                fw.write("E|" + description + "|" + status + "|" + from + "|" + to + "\n");
-            }
-            assert current != null : "invalid input not caught";
-        }
-
-        fw.close();
-
-        writeNote(data);
+        writeTasks(data);
+        writeNotes(data);
     }
 
     /**
-     * Writes all note objects associated to a list of task objects in a specific format
+     * Writes task data to the task file in a serialized format.
      *
-     * @param data the list of tasks to write to the file
-     * @throws IOException if an error occurs while writing to the file
+     * @param data the list of tasks to save
+     * @throws IOException if an error occurs while writing
      */
-    public void writeNote(ArrayList<Task> data) throws IOException {
-        FileWriter fw = new FileWriter(noteData);
-        int size = data.size();
-        for (int i = 0; i < size; i++) {
-            Task current = data.get(i);
-            String currentNote = String.valueOf(current.printNote());
-            if ("null".equals(currentNote)) {
-                fw.write("\n");
-                continue;
+    private void writeTasks(ArrayList<Task> data) throws IOException {
+        try (FileWriter fw = new FileWriter(taskData)) {
+            for (Task task : data) {
+                fw.write(formatTask(task) + "\n");
             }
-            fw.write(currentNote + "\n");
         }
-
-        fw.close();
     }
 
     /**
-     * Reads notes data from stored file and maps them to associated task
-     * The file is read line by line, every 2 lines is parsed to create a corresponding note object
-     * If a line is empty, it will be skipped and task will not have a note
+     * Converts a Task object into its string representation for storage.
      *
-     * @param tasks list of task to apply notes to
-     * @throws IOException if an error occurs while writing to the file
+     * @param task the task to serialize
+     * @return the formatted string representation of the task
+     * @throws IllegalArgumentException if the task type is unsupported
+     */
+    private String formatTask(Task task) {
+        if (task instanceof ToDo todo) {
+            return String.format("T|%s|%s", todo.description, todo.completed);
+        } else if (task instanceof Deadline deadline) {
+            return String.format("D|%s|%s|%s", deadline.description.trim(),
+                    deadline.completed, deadline.by);
+        } else if (task instanceof Event event) {
+            return String.format("E|%s|%s|%s|%s", event.description.trim(),
+                    event.completed, event.from, event.to);
+        }
+        throw new IllegalArgumentException("Unknown task type: " + task.getClass().getName());
+    }
+
+    /**
+     * Writes note data associated with tasks to the note file.
+     * Each line corresponds to the note of a task.
+     *
+     * @param data the list of tasks containing notes
+     * @throws IOException if an error occurs while writing
+     */
+    private void writeNotes(ArrayList<Task> data) throws IOException {
+        try (FileWriter fw = new FileWriter(noteData)) {
+            for (Task task : data) {
+                String note = task.printNote();
+                fw.write(note == null ? "\n" : note + "\n");
+            }
+        }
+    }
+
+    // ------------------ READ NOTES ------------------
+
+    /**
+     * Reads notes from the note file and maps them to their corresponding tasks.
+     *
+     * @param tasks the list of tasks to attach notes to
+     * @throws IOException if an error occurs while reading
      */
     public void readNoteData(ArrayList<Task> tasks) throws IOException {
-        if (!Files.isRegularFile(noteData.toPath()) || Files.size(noteData.toPath()) == 0L) {
+        if (isFileEmpty(noteData)) {
             return;
         }
-        Scanner scanner = new Scanner(noteData);
-        int index = 0;
-        while (scanner.hasNextLine()) {
-            String information = scanner.nextLine();
-
-            //current task does not have a note
-            if (information.isEmpty()) {
-                index++;
-                continue;
+        try (Scanner scanner = new Scanner(noteData)) {
+            int index = 0;
+            while (scanner.hasNextLine() && index < tasks.size()) {
+                index = readNoteForTask(tasks, scanner, index);
             }
-
-            String unFormattedTime = scanner.nextLine();
-            LocalDateTime ParsedTime = new DateFormatter()
-                    .parseTime(unFormattedTime
-                            .substring(unFormattedTime.indexOf(" ")).trim());
-
-            tasks.get(index).addNote(information, ParsedTime); //add note
-            index++;
         }
     }
+
+    /**
+     * Reads a note (and its timestamp) for a single task from the note file.
+     *
+     * @param tasks   the list of tasks
+     * @param scanner the scanner reading the file
+     * @param index   the current task index
+     * @return the next task index
+     */
+    private int readNoteForTask(ArrayList<Task> tasks, Scanner scanner, int index) {
+        String information = scanner.nextLine();
+        if (information.isEmpty()) {
+            return index + 1;
+        }
+
+        String unformattedTime = scanner.nextLine();
+        LocalDateTime parsedTime = new DateFormatter()
+                .parseTime(unformattedTime.substring(unformattedTime.indexOf(" ")).trim());
+
+        tasks.get(index).addNote(information, parsedTime);
+        return index + 1;
+    }
+
+    // ------------------ HELPERS ------------------
+
+    /**
+     * Checks if a file does not exist or is empty.
+     *
+     * @param file the file to check
+     * @return true if the file is missing or empty, false otherwise
+     * @throws IOException if an error occurs while checking file size
+     */
+    private boolean isFileEmpty(File file) throws IOException {
+        return !Files.isRegularFile(file.toPath()) || Files.size(file.toPath()) == 0L;
+    }
 }
+

@@ -45,7 +45,7 @@ public class Ui {
             sb.append("🐶 Hachi added your event to the calendar!\n");
             break;
         case MARK:
-            sb.append("🐶 Hachi wags his tail proudly: 'Hachi.Task complete!'\n");
+            sb.append("🐶 Hachi wags his tail proudly: 'Task complete!'\n");
             break;
         case UNMARK:
             sb.append("🐶 Hachi whines softly: 'Did we bark too soon?'\n");
