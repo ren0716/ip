@@ -80,45 +80,47 @@ public class Ui {
             sb.append("Woof! You can't just do nothing!\n");
             break;
         case DEADLINE:
-            sb.append("🐶 Hachi paws at you: 'I need both a task and a deadline! "
+            sb.append("Hachi paws at you: 'I need both a task and a deadline! "
                     + "Use it like: deadline <task> /by <time>'\n");
             sb.append(printTimeNote());
             break;
         case EVENT:
-            sb.append("🐶 Hachi tilts his head: 'I need a task, a start time, and an end time! "
+            sb.append("Hachi tilts his head: 'I need a task, a start time, and an end time! "
                     + "Use it like: event <task> /from <start> /to <end>'\n");
             sb.append(printTimeNote());
             break;
         case MARK:
-            sb.append("🐶 Hachi is confused: 'which task should i mark?'\n");
+            sb.append("Hachi is confused: 'which task should i mark?'\n");
             break;
         case UNMARK:
-            sb.append("🐶 Hachi is confused: 'which task should i unmark?'\n");
+            sb.append("Hachi is confused: 'which task should i unmark?'\n");
             break;
         case DELETE:
-            sb.append("🐶 Hachi is confused: 'which task should i remove?'\n");
+            sb.append("Hachi is confused: 'which task should i remove?'\n");
             break;
         case UNKNOWN:
-            sb.append("🐶 Hachi tilts his head: 'I don’t understand that command.'\n");
+            sb.append("Hachi tilts his head: 'I don’t understand that command.'\n");
             break;
         case MISSING:
-            sb.append("🐶 Hachi sniffed everywhere, but no task found with that number.\n");
+            sb.append("Hachi sniffed everywhere, but no task found with that number.\n");
             sb.append("Maybe fetch another number?\n");
             break;
         case FIND:
-            sb.append("🐶 Hachi sniffed around but couldn’t find any matching tasks.\n");
+            sb.append("Hachi sniffed around but couldn’t find any matching tasks.\n");
             sb.append("Try a different keyword?\n");
             break;
         case BYE:
-            sb.append("🐶 Hachi tried to save your tasks, but something went wrong.\n");
+            sb.append("Hachi tried to save your tasks, but something went wrong.\n");
             sb.append("It seems like there was an issue with the storage.\n");
             sb.append("Please check your storage or try again later.\n");
             break;
         case NOTE:
             sb.append("What should Hachi know about this task?\n");
             sb.append("Try: Note <TaskNumber> <additional notes>\n");
+            break;
         case DISPLAY:
             sb.append("Hachi cannot remember anything regarding this task\n");
+            break;
         }
         return sb.toString();
     }

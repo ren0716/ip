@@ -70,7 +70,17 @@ public class TaskList {
         }
     }
 
-    // Search tasks by keyword
+    /**
+     * Searches the list of tasks for those whose descriptions contain the given keyword
+     * (case-insensitive) and returns a formatted string of the results.
+     *
+     * <p>If no tasks match the keyword, the returned string will state that no matching
+     * task was found. Otherwise, the returned string will list all matching tasks with
+     * their index numbers.</p>
+     *
+     * @param keyword the word or phrase to search for within task descriptions
+     * @return a formatted string showing either the matching tasks or a message if none were found
+     */
     public String findTasksByKeyword(String keyword) {
         StringBuilder sb = new StringBuilder();
         List<Task> matchedTasks = tasks.stream()

@@ -10,15 +10,44 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Handles the {@link CommandCode#EVENT} command.
+ *
+ * <p>This handler expects user input of the form:
+ * <pre>
+ *     event &lt;description&gt; /from &lt;dd/MM/yyyy HHmm&gt; /to &lt;dd/MM/yyyy HHmm&gt;
+ * </pre>
+ * Example:
+ * <pre>
+ *     event project meeting /from 21/09/2025 1400 /to 21/09/2025 1600
+ * </pre>
+ *
+ * <p>If the input matches this format, a new {@link Event} task is created and
+ * added to the {@link TaskList}. Otherwise, a failure message is returned.</p>
+ */
 public class EventHandler implements Manager {
     private final String input;
     private final Ui ui;
 
+    /**
+     * Constructs an {@code EventHandler}.
+     *
+     * @param input the raw user input string
+     * @param ui    the UI utility for success/failure messages
+     */
     public EventHandler(String input, Ui ui) {
         this.input = input;
         this.ui = ui;
     }
 
+    /**
+     * Parses the input, extracts the event description, start, and end date-times,
+     * and adds a new {@link Event} task to the given {@link TaskList}.
+     *
+     * @param tasks the task list to operate on
+     * @return a success message if parsing and addition succeed,
+     *         or a failure message otherwise
+     */
     @Override
     public String execute(TaskList tasks) {
         Pattern pattern = Pattern.compile(
@@ -40,8 +69,8 @@ public class EventHandler implements Manager {
             return ui.success(CommandCode.EVENT);
         } else {
             return Ui.failure(CommandCode.EVENT);
-
         }
     }
 }
+
 
