@@ -4,12 +4,15 @@ import hachi.Hachi;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class Main extends Application {
     private static Stage primaryStage;
@@ -26,18 +29,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            // Ensure save folder exists
-            File saveDir = BASE_DIR.toFile();
-            if (!saveDir.exists() && !saveDir.mkdirs()) {
-                throw new RuntimeException("Could not create save directory: " + saveDir);
-            }
+            ensureSaveDirectory();
 
             primaryStage = stage;
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainWindow.fxml"));
-            AnchorPane ap = fxmlLoader.load();
+            AnchorPane root = fxmlLoader.load();
 
-            Scene scene = new Scene(ap);
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/view/dialog.css").toExternalForm()
             );
@@ -47,10 +46,38 @@ public class Main extends Application {
             controller.setHachi(hachi);
 
             stage.setScene(scene);
-            stage.setTitle("Hachi"); // optional: set window title
+            stage.setTitle("Hachi");
+
+            // Intercept close request
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                handleClose(stage);
+            });
+
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /** Ensure the save directory exists. */
+    private void ensureSaveDirectory() {
+        File saveDir = BASE_DIR.toFile();
+        if (!saveDir.exists() && !saveDir.mkdirs()) {
+            throw new RuntimeException("Could not create save directory: " + saveDir);
+        }
+    }
+
+    /** Handles confirmation before closing the stage. */
+    private void handleClose(Stage stage) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Exit");
+        alert.setHeaderText("Did you remember to say bye to Hachi?");
+        alert.setContentText("Press OK to exit without saving your tasks.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            stage.close();
         }
     }
 
