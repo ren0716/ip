@@ -1,5 +1,6 @@
 package handler;
 
+import gui.Main;
 import hachi.*;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;

@@ -1,5 +1,6 @@
-package hachi;
+package gui;
 
+import hachi.Hachi;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

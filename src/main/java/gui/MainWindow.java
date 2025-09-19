@@ -1,5 +1,8 @@
-package hachi;
+package gui;
 
+import hachi.Hachi;
+import hachi.Parser;
+import hachi.Ui;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
