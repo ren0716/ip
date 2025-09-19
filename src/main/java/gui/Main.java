@@ -29,13 +29,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            ensureSaveDirectory();
+            ensureSaveDirectory(); //ensure data can be saved
 
-            primaryStage = stage;
+            primaryStage = stage; //set reference for main stage
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainWindow.fxml"));
             AnchorPane root = fxmlLoader.load();
 
+            //apply stylesheet to scene
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
                     getClass().getResource("/view/dialog.css").toExternalForm()
@@ -60,7 +61,9 @@ public class Main extends Application {
         }
     }
 
-    /** Ensure the save directory exists. */
+    /**
+     * Ensure the save directory exists.
+     */
     private void ensureSaveDirectory() {
         File saveDir = BASE_DIR.toFile();
         if (!saveDir.exists() && !saveDir.mkdirs()) {
@@ -68,7 +71,9 @@ public class Main extends Application {
         }
     }
 
-    /** Handles confirmation before closing the stage. */
+    /**
+     * Handles confirmation before closing the stage.
+     */
     private void handleClose(Stage stage) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Exit");

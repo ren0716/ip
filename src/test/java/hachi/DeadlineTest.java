@@ -13,7 +13,7 @@ public class DeadlineTest {
         Deadline deadline = new Deadline("submit report", date);
 
         assertEquals("submit report", deadline.description);
-        assertFalse(deadline.completed); // default should be false
+        assertFalse(deadline.isCompleted); // default should be false
     }
 
     @Test
@@ -21,7 +21,7 @@ public class DeadlineTest {
         LocalDateTime date = LocalDateTime.of(2025, Month.AUGUST, 28, 18, 0);
         Deadline deadline = new Deadline("submit report", true, date);
 
-        assertTrue(deadline.completed);
+        assertTrue(deadline.isCompleted);
     }
 
     @Test

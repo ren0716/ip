@@ -147,13 +147,13 @@ public class Storage {
      */
     private String formatTask(Task task) {
         if (task instanceof ToDo todo) {
-            return String.format("T|%s|%s", todo.description, todo.completed);
+            return String.format("T|%s|%s", todo.description, todo.isCompleted);
         } else if (task instanceof Deadline deadline) {
             return String.format("D|%s|%s|%s", deadline.description.trim(),
-                    deadline.completed, deadline.by);
+                    deadline.isCompleted, deadline.by);
         } else if (task instanceof Event event) {
             return String.format("E|%s|%s|%s|%s", event.description.trim(),
-                    event.completed, event.from, event.to);
+                    event.isCompleted, event.from, event.to);
         }
         throw new IllegalArgumentException("Unknown task type: " + task.getClass().getName());
     }

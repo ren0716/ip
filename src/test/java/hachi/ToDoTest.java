@@ -10,14 +10,14 @@ public class ToDoTest {
     public void createTodo_taskCreatedWithCorrectDescription() {
         ToDo todo = new ToDo("read book");
         assertEquals("read book", todo.description);
-        assertFalse(todo.completed); // default should be not done
+        assertFalse(todo.isCompleted); // default should be not done
     }
 
     @Test
     public void markTodo_taskMarkedAsDone() {
         ToDo todo = new ToDo("do laundry");
         todo.mark();
-        assertTrue(todo.completed);
+        assertTrue(todo.isCompleted);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class ToDoTest {
         ToDo todo = new ToDo("do laundry");
         todo.mark();
         todo.unmark();
-        assertFalse(todo.completed);
+        assertFalse(todo.isCompleted);
     }
 
     @Test

@@ -1,7 +1,6 @@
 package hachi;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Represents a generic task with a description and a completion status. This class provides
@@ -9,7 +8,7 @@ import java.time.format.DateTimeFormatter;
  * The task also includes a description of the task and its completion state (either completed or not).
  */
 public class Task {
-    Boolean completed = false;
+    Boolean isCompleted = false;
     String description;
     Note note;
 
@@ -30,21 +29,21 @@ public class Task {
      */
     public Task(String description, Boolean completed) {
         this.description = description;
-        this.completed = completed;
+        this.isCompleted = completed;
     }
 
     /**
      * Marks the task as completed.
      */
     public void mark() {
-        completed = true;
+        isCompleted = true;
     }
 
     /**
      * Marks the task as incomplete.
      */
     public void unmark() {
-        completed = false;
+        isCompleted = false;
     }
 
     /**
@@ -63,7 +62,7 @@ public class Task {
      */
     @Override
     public String toString() {
-        return String.format("[%s] %s", completed ? "X" : " ", description);
+        return String.format("[%s] %s", isCompleted ? "X" : " ", description);
     }
 
     /**
