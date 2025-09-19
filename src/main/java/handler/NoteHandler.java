@@ -48,23 +48,31 @@ public class NoteHandler implements Manager {
     @Override
     public String execute(TaskList tasks) {
         String[] parts = input.split(" ");
-        if (parts.length > 2) {
-            try {
-                int taskNumber = Integer.parseInt(parts[1]);
-                if (taskNumber >= 1 && taskNumber <= tasks.getTasks().size()) {
-                    String information = parts[2];
-                    LocalDateTime creationTime = LocalDateTime.now();
-                    tasks.getTaskAt(taskNumber - 1).addNote(information, creationTime);
-                    return ui.success(CommandCode.NOTE);
-                } else {
-                    return Ui.failure(CommandCode.MISSING); // invalid task index
-                }
-            } catch (NumberFormatException e) {
-                return Ui.failure(CommandCode.NOTE); // invalid number format
-            }
+
+        // guard: not enough parts
+        if (parts.length <= 2) {
+            return Ui.failure(CommandCode.NOTE); // missing parameters
         }
-        return Ui.failure(CommandCode.NOTE); // missing parameters
+
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            return Ui.failure(CommandCode.NOTE); // invalid number format
+        }
+
+        // guard: invalid task index
+        if (taskNumber < 1 || taskNumber > tasks.getTasks().size()) {
+            return Ui.failure(CommandCode.MISSING);
+        }
+
+        // success path
+        String information = parts[2];
+        LocalDateTime creationTime = LocalDateTime.now();
+        tasks.getTaskAt(taskNumber - 1).addNote(information, creationTime);
+        return ui.success(CommandCode.NOTE);
     }
+
 
 }
 

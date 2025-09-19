@@ -46,20 +46,27 @@ public class DeleteHandler implements Manager {
     @Override
     public String execute(TaskList tasks) {
         String[] parts = input.trim().split("\\s+");
-        if (parts.length > 1) {
-            try {
-                int taskNumber = Integer.parseInt(parts[1]);
-                if (taskNumber >= 1 && taskNumber <= tasks.getTasks().size()) {
-                    tasks.getTasks().remove(taskNumber - 1);
-                    return ui.success(CommandCode.DELETE);
-                } else {
-                    return Ui.failure(CommandCode.MISSING);
-                }
-            } catch (NumberFormatException e) {
-                return Ui.failure(CommandCode.DELETE);
-            }
-        } else {
+
+        // guard: no task number provided
+        if (parts.length <= 1) {
             return Ui.failure(CommandCode.DELETE);
         }
+
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            return Ui.failure(CommandCode.DELETE); // invalid number format
+        }
+
+        // guard: invalid task index
+        if (taskNumber < 1 || taskNumber > tasks.getTasks().size()) {
+            return Ui.failure(CommandCode.MISSING);
+        }
+
+        // success path
+        tasks.getTasks().remove(taskNumber - 1);
+        return ui.success(CommandCode.DELETE);
     }
+
 }

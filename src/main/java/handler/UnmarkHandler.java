@@ -44,22 +44,29 @@ public class UnmarkHandler implements Manager {
     @Override
     public String execute(TaskList tasks) {
         String[] parts = input.split(" ");
-        if (parts.length > 1) {
-            try {
-                int taskNumber = Integer.parseInt(parts[1]);
-                if (taskNumber >= 1 && taskNumber <= tasks.getTasks().size()) {
-                    tasks.getTasks().get(taskNumber - 1).unmark();
-                    return ui.success(CommandCode.UNMARK);
-                } else {
-                    return Ui.failure(CommandCode.MISSING);
-                }
-            } catch (NumberFormatException e) {
-                return Ui.failure(CommandCode.UNMARK); // invalid number format
-            }
-        } else {
+
+        // guard: no task number provided
+        if (parts.length <= 1) {
             return Ui.failure(CommandCode.UNMARK);
         }
+
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            return Ui.failure(CommandCode.UNMARK); // invalid number format
+        }
+
+        // guard: invalid task index
+        if (taskNumber < 1 || taskNumber > tasks.getTasks().size()) {
+            return Ui.failure(CommandCode.MISSING);
+        }
+
+        // success path
+        tasks.getTasks().get(taskNumber - 1).unmark();
+        return ui.success(CommandCode.UNMARK);
     }
+
 
 }
 
